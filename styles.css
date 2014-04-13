@@ -1,0 +1,19 @@
+body {
+  font-size: 16px;
+}
+
+#spritesheet {
+  display: none;
+}
+
+#fun-container {
+  outline: 1px solid black;
+  margin: 1.25em;
+  height: 600px;
+  width: 800px;
+}
+
+#the-canvas {
+  outline: 1px solid red;
+  margin: 1.25em;
+}
