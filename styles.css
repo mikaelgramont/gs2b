@@ -9,11 +9,10 @@ body {
 #fun-container {
   outline: 1px solid black;
   margin: 1.25em;
-  height: 600px;
-  width: 800px;
+  height: 500px;
+  width: 500px;
 }
 
 #the-canvas {
-  outline: 1px solid red;
-  margin: 1.25em;
+  position: relative;
 }
