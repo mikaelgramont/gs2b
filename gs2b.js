@@ -1,6 +1,5 @@
-(function(window, console) {
-  var buttonEl = document.getElementById('do-it'),
-      animationCounter = 0,
+(function() {
+  var animationCounter = 0,
       frameCounter = 0,
       totalAnimations = 0,
       totalFrames = 0,
@@ -9,22 +8,28 @@
         'width': 32,
         'height': 32,
         'numFrames': 8,
-        'fps': 2,
-        'current': 0,
+        'fps': 8,
       },
-      canvasInfo = {
-        'width': 500,
-        'height': 500,
-      };
+      canvasInfo = {},
+      running = false,
+      requestAnimationFrameId = null;
   const FPS = 60;
+
+  var containerEl = document.getElementById('fun-container');
+  canvasInfo.width = containerEl.offsetWidth;
+  canvasInfo.height = containerEl.offsetHeight;
 
   var canvasEl = document.createElement('canvas');
   canvasEl.width = canvasInfo.width;
   canvasEl.height = spriteInfo.numFrames * canvasInfo.height;
   canvasEl.id = 'the-canvas';
-  document.getElementById('fun-container').appendChild(canvasEl);
+  containerEl.appendChild(canvasEl);
   var context = canvasEl.getContext('2d');
 
+  var addEl = document.getElementById('drop-one');
+  var stopEl = document.getElementById('stop');
+
+  // Run for every paint, this function synchronises all animations.
   var animationTick = function() {
     totalAnimations += 1;
     animationCounter += 1;
@@ -40,11 +45,14 @@
     if (frameCounter >= spriteInfo.numFrames) {
       frameCounter = 0;
     }
-    moveCanvas();
-    requestAnimationFrame(animationTick);
+    updateCanvasPosition();
+
+    requestAnimationFrameId = requestAnimationFrame(animationTick);
   };
 
-  var drawSprite = function () {
+  // Adds a new sprite in the canvas at a random position. This will add a
+  // sprite frame in each canvas frame.
+  var addSprite = function () {
     var destinationPosition = getRandomPosition();
 
     for (var i = 0; i < spriteInfo.numFrames; i++) {
@@ -52,27 +60,37 @@
       context.drawImage(
         spriteInfo.source,            // source
         0,                            // source x
-        offset * spriteInfo.height,   // source y
+        offset * spriteInfo.height,   // source y - set to 0 to sync all sprites
         spriteInfo.width,             // source width
         spriteInfo.height,            // source height
         destinationPosition.x,        // destination x
-        destinationPosition.y + i * canvasInfo.height,        // destination y
+        destinationPosition.y + i * canvasInfo.height, // destination y
         spriteInfo.width,             // destination width
         spriteInfo.height);           // destination height
     }
   };
 
-  // Returns random coordinates that are fully contained within the canvas
+  // Returns random coordinates that are fully contained within the canvas.
   var getRandomPosition = function() {
     var x = Math.floor(Math.random() * (canvasInfo.width - spriteInfo.width)),
         y = Math.floor(Math.random() * (canvasInfo.height - spriteInfo.width));
     return {'x':x, 'y':y};
   };
 
-  var moveCanvas = function() {
+  // Move the canvas vertically to display the current frame.
+  var updateCanvasPosition = function() {
     canvasEl.style.top = (-1 * frameCounter * canvasInfo.height) + 'px';
   };
 
-  buttonEl.addEventListener('click', drawSprite);
-  requestAnimationFrame(animationTick);
-})(window, console);
+  addEl.addEventListener('click', function() {
+    addSprite();
+    if (!requestAnimationFrameId) {
+      requestAnimationFrameId = requestAnimationFrame(animationTick);
+    }
+  });
+
+  stopEl.addEventListener('click', function() {
+    cancelAnimationFrame(requestAnimationFrameId);
+    requestAnimationFrameId = null;
+  });
+})();

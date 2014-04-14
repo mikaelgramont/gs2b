@@ -11,6 +11,7 @@ body {
   margin: 1.25em;
   height: 500px;
   width: 500px;
+  overflow: hidden;
 }
 
 #the-canvas {
