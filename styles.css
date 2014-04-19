@@ -10,10 +10,21 @@ body {
   outline: 1px solid black;
   margin: 1.25em;
   height: 500px;
-  width: 500px;
+  width: 200px;
   overflow: hidden;
 }
 
 #the-canvas {
   position: relative;
+}
+
+.image-container {
+  outline: 1px solid blue;
+  overflow-x: auto;
+}
+
+.image-item {
+  display: block;
+  outline: 1px solid red;
+  margin: 5px;
 }

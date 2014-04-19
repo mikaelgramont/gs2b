@@ -1,13 +1,25 @@
 <html>
+
 <head>
   <link rel="stylesheet" href="styles.css" type="text/css">
 </head>
+
 <body>
   <button id="drop-one">Drop one sprite, yo!</button>
   <button id="stop">Stop</button>
-  <img id="spritesheet" src="sprite.png" alt="sprite image">
-  <div id="fun-container">
+  <span id="frame-counter"></span>
+
+  <div class="image-container">
+    <img class="image-item" id="original" src="original.png" alt="original animation">
+    <img class="image-item" id="full-framerate" src="full.png"
+      alt="animation with full framerate">
+    <img class="image-item" id="half-framerate" src="half.png"
+      alt="animation with half framerate">
+    <img class="image-item" id="edited-animation" alt="edited animation">
   </div>
+
+  <div id="fun-container"></div>
+
   <script src="gs2b.js"></script>
 </body>
 </html>

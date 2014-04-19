@@ -4,11 +4,11 @@
       totalAnimations = 0,
       totalFrames = 0,
       spriteInfo = {
-        'source': document.getElementById('spritesheet'),
-        'width': 32,
-        'height': 32,
-        'numFrames': 8,
-        'fps': 8,
+        'source': document.getElementById('half-framerate'),
+        'width': 20,
+        'height': 30,
+        'numFrames': 27,
+        'fps': 7.5 //
       },
       canvasInfo = {},
       running = false,
@@ -18,6 +18,8 @@
   var containerEl = document.getElementById('fun-container');
   canvasInfo.width = containerEl.offsetWidth;
   canvasInfo.height = containerEl.offsetHeight;
+
+  var frameCounterEl = document.getElementById('frame-counter');
 
   var canvasEl = document.createElement('canvas');
   canvasEl.width = canvasInfo.width;
@@ -45,6 +47,9 @@
     if (frameCounter >= spriteInfo.numFrames) {
       frameCounter = 0;
     }
+
+    frameCounterEl.innerHTML = frameCounter;
+
     updateCanvasPosition();
 
     requestAnimationFrameId = requestAnimationFrame(animationTick);
@@ -59,8 +64,8 @@
       var offset = (frameCounter + i) % spriteInfo.numFrames;
       context.drawImage(
         spriteInfo.source,            // source
-        0,                            // source x
-        offset * spriteInfo.height,   // source y - set to 0 to sync all sprites
+        offset * spriteInfo.width,    // source x - use i or offset to sync or unsync sprites
+        0,                            // source y
         spriteInfo.width,             // source width
         spriteInfo.height,            // source height
         destinationPosition.x,        // destination x
@@ -72,9 +77,16 @@
 
   // Returns random coordinates that are fully contained within the canvas.
   var getRandomPosition = function() {
-    var x = Math.floor(Math.random() * (canvasInfo.width - spriteInfo.width)),
-        y = Math.floor(Math.random() * (canvasInfo.height - spriteInfo.width));
-    return {'x':x, 'y':y};
+    var x = Math.random() * canvasInfo.width;
+    x = Math.min(x, canvasInfo.width - spriteInfo.width);
+
+    var y = Math.random() * canvasInfo.height
+    y = Math.min(y, canvasInfo.height - spriteInfo.height);
+
+    return {
+      'x': Math.floor(x),
+      'y': Math.floor(y)
+    };
   };
 
   // Move the canvas vertically to display the current frame.
@@ -93,4 +105,48 @@
     cancelAnimationFrame(requestAnimationFrameId);
     requestAnimationFrameId = null;
   });
+
+  var fixAnim = function() {
+    var animInfo = {
+      'original': document.getElementById('original'),
+      'destination': document.getElementById('edited-animation'),
+      'totalWidth': 5830,
+      'cellWidth': 110,
+      'animOffset': 73,
+      'animWidth': 20,
+      'height': 30
+    };
+    var destinationCanvas = document.createElement('canvas');
+    destinationCanvas.id = 'destination-canvas';
+    destinationCanvas.width = animInfo.animWidth * animInfo.totalWidth / animInfo.cellWidth;
+    destinationCanvas.height = animInfo.height;
+    document.body.appendChild(destinationCanvas);
+    var destinationContext = destinationCanvas.getContext('2d');
+    for (var i = 0, x = 0, destinationPointer = 0;
+         x < animInfo.totalWidth;
+         x += animInfo.cellWidth, i++) {
+      // Skip some iterations here to drop frames.
+      if (i % 2) {
+        continue;
+      }
+
+      destinationContext.drawImage(
+        animInfo.original,                             // source
+        x + animInfo.animOffset,                       // source x
+        0,                                             // source y
+        animInfo.animWidth,                            // source width
+        animInfo.height,                               // source height
+        destinationPointer * animInfo.animWidth,       // destination x
+        0,                                             // destination y
+        animInfo.animWidth,                            // destination width
+        animInfo.height);                              // destination height
+
+      destinationPointer++;
+    }
+    var dataURL = destinationCanvas.toDataURL();
+    console.log('dataURL', dataURL);
+    animInfo.destination.src = dataURL;
+  };
+  window.fixAnim = fixAnim;
+
 })();
