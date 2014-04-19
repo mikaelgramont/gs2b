@@ -6,7 +6,13 @@ body {
   display: none;
 }
 
-#fun-container {
+.clearfix:after {
+  content: ' ';
+  clear: both;
+}
+
+.canvas-container {
+  float: left;
   outline: 1px solid black;
   margin: 1.25em;
   height: 500px;
@@ -14,7 +20,7 @@ body {
   overflow: hidden;
 }
 
-#the-canvas {
+.positioned {
   position: relative;
 }
 
